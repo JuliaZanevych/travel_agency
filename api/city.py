@@ -6,11 +6,11 @@ from config import api, db
 from model import City
 from schema import city_model, city_schema, cities_schema
 
-ns = Namespace('City API', description='CRUD operations for City essence')
+ns = Namespace('cities', description='CRUD operations for City essence')
 api.add_namespace(ns)
 
 
-@ns.route('/cities/post')
+@ns.route('/post')
 class CreateCity(Resource):
     @ns.expect(city_model)
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
@@ -33,7 +33,7 @@ class CreateCity(Resource):
         return res
 
 
-@ns.route('/cities/<int:id>/get')
+@ns.route('/<int:id>/get')
 class GetCity(Resource):
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
     @ns.response(200, description='Successfully get City', model=city_model)
@@ -49,7 +49,7 @@ class GetCity(Resource):
         return jsonify(city_schema.dump(city))
 
 
-@ns.route('/cities/get')
+@ns.route('/get')
 class GetCitys(Resource):
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
     @ns.response(200, description='Successfully get list of Cities', model=city_model)
@@ -57,7 +57,7 @@ class GetCitys(Resource):
         return jsonify(cities_schema.dump(City.query.all()))
 
 
-@ns.route('/cities/<int:id>/update')
+@ns.route('/<int:id>/update')
 class UpdateCity(Resource):
     @ns.expect(city_model)
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
@@ -81,7 +81,7 @@ class UpdateCity(Resource):
         return jsonify(city_schema.dump(city))
 
 
-@ns.route('/cities/<int:id>/delete')
+@ns.route('/<int:id>/delete')
 class DeleteCity(Resource):
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
     @ns.response(204, description='Successfully removed City')

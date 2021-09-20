@@ -8,11 +8,11 @@ from config import api, db
 from model import Tour
 from schema import tour_model, tour_schema, tours_schema
 
-ns = Namespace('Tour API', description='CRUD operations for Tour essence')
+ns = Namespace('tours', description='CRUD operations for Tour essence')
 api.add_namespace(ns)
 
 
-@ns.route('/tours/post')
+@ns.route('/post')
 class CreateTour(Resource):
     @ns.expect(tour_model)
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
@@ -37,7 +37,7 @@ class CreateTour(Resource):
         return res
 
 
-@ns.route('/tours/<int:id>/get')
+@ns.route('/<int:id>/get')
 class GetTour(Resource):
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
     @ns.response(200, description='Successfully get Tour', model=tour_model)
@@ -52,7 +52,7 @@ class GetTour(Resource):
         return jsonify(tour_schema.dump(tour))
 
 
-@ns.route('/tours/get')
+@ns.route('/get')
 class GetTours(Resource):
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
     @ns.response(200, description='Successfully get list of Tours', model=tour_model)
@@ -60,7 +60,7 @@ class GetTours(Resource):
         return jsonify(tours_schema.dump(Tour.query.all()))
 
 
-@ns.route('/tours/<int:id>/update')
+@ns.route('/<int:id>/update')
 class UpdateTour(Resource):
     @ns.expect(tour_model)
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
@@ -86,7 +86,7 @@ class UpdateTour(Resource):
         return jsonify(tour_schema.dump(tour))
 
 
-@ns.route('/tours/<int:id>/delete')
+@ns.route('/<int:id>/delete')
 class DeleteTour(Resource):
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
     @ns.response(204, description='Successfully removed Tour')

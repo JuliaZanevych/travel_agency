@@ -8,11 +8,11 @@ from config import api, db
 from model import Customer
 from schema import customer_schema, customers_schema, customer_model
 
-ns = Namespace('Customer API', description='CRUD operations for Customer essence')
+ns = Namespace('customers', description='CRUD operations for Customer essence')
 api.add_namespace(ns)
 
 
-@ns.route('/customers/post')
+@ns.route('/post')
 class CreateCustomer(Resource):
     @ns.expect(customer_model)
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
@@ -38,7 +38,7 @@ class CreateCustomer(Resource):
         return res
 
 
-@ns.route('/customers/<int:id>/get')
+@ns.route('/<int:id>/get')
 class GetCustomer(Resource):
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
     @ns.response(200, description='Successfully get Customer', model=customer_model)
@@ -54,7 +54,7 @@ class GetCustomer(Resource):
         return jsonify(customer_schema.dump(customer))
 
 
-@ns.route('/customers/get')
+@ns.route('/get')
 class GetCustomers(Resource):
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
     @ns.response(200, description='Successfully get list of Customers', model=customer_model)
@@ -62,7 +62,7 @@ class GetCustomers(Resource):
         return jsonify(customers_schema.dump(Customer.query.all()))
 
 
-@ns.route('/customers/<int:id>/update')
+@ns.route('/<int:id>/update')
 class UpdateCustomer(Resource):
     @ns.expect(customer_model)
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
@@ -90,7 +90,7 @@ class UpdateCustomer(Resource):
         return jsonify(customer_schema.dump(customer))
 
 
-@ns.route('/customers/<int:id>/delete')
+@ns.route('/<int:id>/delete')
 class DeleteCustomer(Resource):
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
     @ns.response(204, description='Successfully removed Customer')

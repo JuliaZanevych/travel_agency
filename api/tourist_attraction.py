@@ -6,11 +6,11 @@ from config import api, db
 from model import TouristAttraction
 from schema import tourist_attraction_model, tourist_attraction_schema, tourist_attractions_schema
 
-ns = Namespace('Tourist Attraction API', description='CRUD operations for Tourist Attraction essence')
+ns = Namespace('tourist-attractions', description='CRUD operations for Tourist Attraction essence')
 api.add_namespace(ns)
 
 
-@ns.route('/tourist_attractions/post')
+@ns.route('/post')
 class CreateTouristAttraction(Resource):
     @ns.expect(tourist_attraction_model)
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
@@ -32,7 +32,7 @@ class CreateTouristAttraction(Resource):
         return res
 
 
-@ns.route('/tourist_attractions/<int:id>/get')
+@ns.route('/<int:id>/get')
 class GetTouristAttraction(Resource):
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
     @ns.response(200, description='Successfully get Tourist Attraction', model=tourist_attraction_model)
@@ -47,7 +47,7 @@ class GetTouristAttraction(Resource):
         return jsonify(tourist_attraction_schema.dump(tourist_attraction))
 
 
-@ns.route('/tourist_attractions/get')
+@ns.route('/get')
 class GetTouristAttractions(Resource):
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
     @ns.response(200, description='Successfully get list of Tourist Attractions', model=tourist_attraction_model)
@@ -55,7 +55,7 @@ class GetTouristAttractions(Resource):
         return jsonify(tourist_attractions_schema.dump(TouristAttraction.query.all()))
 
 
-@ns.route('/tourist_attractions/<int:id>/update')
+@ns.route('/<int:id>/update')
 class UpdateTouristAttraction(Resource):
     @ns.expect(tourist_attraction_model)
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
@@ -78,7 +78,7 @@ class UpdateTouristAttraction(Resource):
         return jsonify(tourist_attraction_schema.dump(tourist_attraction))
 
 
-@ns.route('/tourist_attractions/<int:id>/delete')
+@ns.route('/<int:id>/delete')
 class DeleteTouristAttraction(Resource):
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
     @ns.response(204, description='Successfully removed Tourist Attraction')

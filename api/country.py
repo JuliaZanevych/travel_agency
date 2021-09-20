@@ -6,11 +6,11 @@ from config import api, db
 from model import Country
 from schema import country_model, country_schema, countries_schema
 
-ns = Namespace('Country API', description='CRUD operations for Country essence')
+ns = Namespace('countries', description='CRUD operations for Country essence')
 api.add_namespace(ns)
 
 
-@ns.route('/countries/post')
+@ns.route('/post')
 class CreateCountry(Resource):
     @ns.expect(country_model)
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
@@ -32,7 +32,7 @@ class CreateCountry(Resource):
         return res
 
 
-@ns.route('/countries/<int:id>/get')
+@ns.route('/<int:id>/get')
 class GetCountry(Resource):
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
     @ns.response(200, description='Successfully get Country', model=country_model)
@@ -48,7 +48,7 @@ class GetCountry(Resource):
         return jsonify(country_schema.dump(country))
 
 
-@ns.route('/countries/get')
+@ns.route('/get')
 class GetCustomers(Resource):
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
     @ns.response(200, description='Successfully get list of Countries', model=country_model)
@@ -56,7 +56,7 @@ class GetCustomers(Resource):
         return jsonify(countries_schema.dump(Country.query.all()))
 
 
-@ns.route('/countries/<int:id>/update')
+@ns.route('/<int:id>/update')
 class UpdateCountry(Resource):
     @ns.expect(country_model)
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
@@ -79,7 +79,7 @@ class UpdateCountry(Resource):
         return jsonify(country_schema.dump(country))
 
 
-@ns.route('/countries/<int:id>/delete')
+@ns.route('/<int:id>/delete')
 class DeleteCountry(Resource):
     @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
     @ns.response(204, description='Successfully removed Country')
