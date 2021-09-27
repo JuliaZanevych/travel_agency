@@ -20,8 +20,8 @@ class CreateTouristAttraction(Resource):
 
         tourist_attraction = TouristAttraction(
             name=json.get('name'),
-            city_id=json.get('city_id'),
             type=json.get('type'),
+            city_id=json.get('city_id'),
             details=json.get('details'),
         )
         db.session.add(tourist_attraction)
@@ -71,8 +71,8 @@ class UpdateTouristAttraction(Resource):
             res.status_code = 404
             return res
         tourist_attraction.name = json.get('name')
-        tourist_attraction.city_id = json.get('city_id'),
         tourist_attraction.type = json.get('type')
+        tourist_attraction.city_id = json.get('city_id'),
         tourist_attraction.details = json.get('details')
         db.session.commit()
         return jsonify(tourist_attraction_schema.dump(tourist_attraction))

@@ -19,7 +19,7 @@ class CreateCountry(Resource):
         json = request.json
 
         country = Country(
-            county_name=json.get('county_name'),
+            country_name=json.get('country_name'),
             official_language=json.get('official_language'),
             population=json.get('population'),
             details=json.get('details'),
@@ -71,7 +71,7 @@ class UpdateCountry(Resource):
             res = jsonify({'message': 'Country not found!'})
             res.status_code = 404
             return res
-        country.county_name = json.get('county_name')
+        country.country_name = json.get('country_name')
         country.official_language = json.get('official_language')
         country.population = json.get('population')
         country.details = json.get('details')
