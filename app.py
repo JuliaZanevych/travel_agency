@@ -6,7 +6,11 @@ from api import \
     country, \
     tour, \
     tourist_attraction, \
-    city
+    city, \
+    transportation, \
+    customer_addresses, \
+    hotel, \
+    user
 
 if __name__ == '__main__':
     app.run(debug=True)

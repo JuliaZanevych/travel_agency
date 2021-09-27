@@ -10,6 +10,8 @@ flask-sqlalchemy = "*"
 flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
 flask-restx = "*"
+pymysql = "*"
+cryptography = "*"
 
 [dev-packages]
 
