@@ -1,0 +1,1309 @@
+swagger: '2.0'
+# basePath: /
+paths:
+  /cities/get:
+    get:
+      responses:
+        '200':
+          description: Successfully get list of Cities
+          schema:
+            $ref: '#/definitions/city'
+      operationId: get_get_citys
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - cities
+  /cities/post:
+    post:
+      responses:
+        '201':
+          description: Successfully created new City
+          schema:
+            $ref: '#/definitions/city'
+      operationId: post_create_city
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/city'
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - cities
+  /cities/{id}/delete:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    delete:
+      responses:
+        '204':
+          description: Successfully removed City
+        '404':
+          description: City not found!
+      operationId: delete_delete_city
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - cities
+  /cities/{id}/get:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: Successfully get City
+          schema:
+            $ref: '#/definitions/city'
+        '404':
+          description: City not found!
+      operationId: get_get_city
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - cities
+  /cities/{id}/hotels/get:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: Successfully get list of Hotels
+          schema:
+            $ref: '#/definitions/hotel'
+      operationId: get_get_hotels_by_city_id
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - cities
+  /cities/{id}/customer_addresses/get:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: Successfully get list of Customer Adresses
+          schema:
+            $ref: '#/definitions/hotel'
+      operationId: get_get_customer_addresses_by_city_id
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - cities
+  /cities/{id}/update:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    put:
+      responses:
+        '200':
+          description: Successfully updated City
+          schema:
+            $ref: '#/definitions/city'
+        '404':
+          description: City not found!
+      operationId: put_update_city
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/city'
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - cities
+  /countries/get:
+    get:
+      responses:
+        '200':
+          description: Successfully get list of Countries
+          schema:
+            $ref: '#/definitions/Country_Demo'
+      operationId: get_get_customers
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - countries
+  /countries/post:
+    post:
+      responses:
+        '201':
+          description: Successfully created new Country
+          schema:
+            $ref: '#/definitions/Country_Demo'
+      operationId: post_create_country
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Country_Demo'
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - countries
+  /countries/{id}/delete:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    delete:
+      responses:
+        '204':
+          description: Successfully removed Country
+        '404':
+          description: Country not found!
+      operationId: delete_delete_country
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - countries
+  /countries/{id}/get:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: Successfully get Country
+          schema:
+            $ref: '#/definitions/Country_Demo'
+        '404':
+          description: Country not found!
+      operationId: get_get_country
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - countries
+  /countries/{id}/cities/get:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: Successfully get list of Cities
+          schema:
+            $ref: '#/definitions/hotel'
+      operationId: get_get_cities_by_country_id
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - countries
+  /countries/{id}/update:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    put:
+      responses:
+        '200':
+          description: Successfully updated Country
+          schema:
+            $ref: '#/definitions/Country_Demo'
+        '404':
+          description: Country not found!
+      operationId: put_update_country
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Country_Demo'
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - countries
+  /customer_addresses/get:
+    get:
+      responses:
+        '200':
+          description: Successfully get list of Customer addressess
+          schema:
+            $ref: '#/definitions/customer_addresses'
+      operationId: get_get_customer_addressess
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - customer_addresses
+  /customer_addresses/post:
+    post:
+      responses:
+        '201':
+          description: Successfully created new Customer addresses
+          schema:
+            $ref: '#/definitions/customer_addresses'
+      operationId: post_create_customer_addresses
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/customer_addresses'
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - customer_addresses
+  /customer_addresses/{id}/delete:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    delete:
+      responses:
+        '204':
+          description: Successfully removed Customer addresses
+        '404':
+          description: Customer addresses not found!
+      operationId: delete_delete_customer_addresses
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - customer_addresses
+  /customer_addresses/{id}/get:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: Successfully get Customer addresses
+          schema:
+            $ref: '#/definitions/customer_addresses'
+        '404':
+          description: Customer addresses not found!
+      operationId: get_get_customer_addresses
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - customer_addresses
+  /customer_addresses/{id}/update:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    put:
+      responses:
+        '200':
+          description: Successfully updated Customer addresses
+          schema:
+            $ref: '#/definitions/customer_addresses'
+        '404':
+          description: Customer addresses not found!
+      operationId: put_update_customer_addresses
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/customer_addresses'
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - customer_addresses
+  /customers/get:
+    get:
+      responses:
+        '200':
+          description: Successfully get list of Customers
+          schema:
+            $ref: '#/definitions/Customer_Demo'
+      operationId: get_customers
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - customers
+  /customers/post:
+    post:
+      responses:
+        '201':
+          description: Successfully created new Customer
+          schema:
+            $ref: '#/definitions/Customer_Demo'
+      operationId: post_create_customer
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Customer_Demo'
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - customers
+  /customers/{id}/delete:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    delete:
+      responses:
+        '204':
+          description: Successfully removed Customer
+        '404':
+          description: Customer not found!
+      operationId: delete_delete_customer
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - customers
+  /customers/{id}/get:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: Successfully get Customer
+          schema:
+            $ref: '#/definitions/Customer_Demo'
+        '404':
+          description: Customer not found!
+      operationId: get_get_customer
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - customers
+  /customers/{id}/update:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    put:
+      responses:
+        '200':
+          description: Successfully updated Customer
+          schema:
+            $ref: '#/definitions/Customer_Demo'
+        '404':
+          description: Customer not found!
+      operationId: put_update_customer
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Customer_Demo'
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - customers
+  /hotels/get:
+    get:
+      responses:
+        '200':
+          description: Successfully get list of Hotels
+          schema:
+            $ref: '#/definitions/hotel'
+      operationId: get_get_hotels
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - hotels
+  /hotels/post:
+    post:
+      responses:
+        '201':
+          description: Successfully created new Hotel
+          schema:
+            $ref: '#/definitions/hotel'
+      operationId: post_create_hotel
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/hotel'
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - hotels
+  /hotels/{id}/delete:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    delete:
+      responses:
+        '204':
+          description: Successfully removed Hotel
+        '404':
+          description: Hotel not found!
+      operationId: delete_delete_hotel
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - hotels
+  /hotels/{id}/get:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: Successfully get Hotel
+          schema:
+            $ref: '#/definitions/hotel'
+        '404':
+          description: Hotel not found!
+      operationId: get_get_hotel
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - hotels
+  /hotels/{id}/update:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    put:
+      responses:
+        '200':
+          description: Successfully updated Hotel
+          schema:
+            $ref: '#/definitions/hotel'
+        '404':
+          description: Hotel  not found!
+      operationId: put_update_hotel
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/hotel'
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - hotels
+  /tourist-attractions/get:
+    get:
+      responses:
+        '200':
+          description: Successfully get list of Tourist Attractions
+          schema:
+            $ref: '#/definitions/Tourist_Attraction_Demo'
+      operationId: get_get_tourist_attractions
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - tourist-attractions
+  /tourist-attractions/post:
+    post:
+      responses:
+        '201':
+          description: Successfully created new Tourist Attraction
+          schema:
+            $ref: '#/definitions/Tourist_Attraction_Demo'
+      operationId: post_create_tourist_attraction
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Tourist_Attraction_Demo'
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - tourist-attractions
+  /tourist-attractions/{id}/delete:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    delete:
+      responses:
+        '204':
+          description: Successfully removed Tourist Attraction
+        '404':
+          description: Tourist Attraction not found!
+      operationId: delete_delete_tourist_attraction
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - tourist-attractions
+  /tourist-attractions/{id}/get:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: Successfully get Tourist Attraction
+          schema:
+            $ref: '#/definitions/Tourist_Attraction_Demo'
+        '404':
+          description: Tourist Attraction not found!
+      operationId: get_get_tourist_attraction
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - tourist-attractions
+  /tourist-attractions/{id}/update:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    put:
+      responses:
+        '200':
+          description: Successfully updated Tourist Attraction
+          schema:
+            $ref: '#/definitions/Tourist_Attraction_Demo'
+        '404':
+          description: Tourist Attraction not found!
+      operationId: put_update_tourist_attraction
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Tourist_Attraction_Demo'
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - tourist-attractions
+  /tours/get:
+    get:
+      responses:
+        '200':
+          description: Successfully get list of Tours
+          schema:
+            $ref: '#/definitions/Tour_Demo'
+      operationId: get_get_tours
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - tours
+  /tours/{id}/tourist-attractions/get:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: Successfully get list of Tourist Attractions
+          schema:
+            $ref: '#/definitions/Tourist_Attraction_Demo'
+      operationId: get_tourist_attractions_for_tour_by_id
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - tours
+  /tours/{id}/hotels/get:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: Successfully get list of Hotels
+          schema:
+            $ref: '#/definitions/hotel'
+      operationId: get_get_hotels_by_tour_id
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - tours
+  /tours/post:
+    post:
+      responses:
+        '201':
+          description: Successfully created new Customer
+          schema:
+            $ref: '#/definitions/Tour_Demo'
+      operationId: post_create_tour
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Tour_Demo'
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - tours
+  /tours/{id}/delete:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    delete:
+      responses:
+        '204':
+          description: Successfully removed Tour
+        '404':
+          description: Tour not found!
+      operationId: delete_delete_tour
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - tours
+  /tours/{id}/get:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: Successfully get Tour
+          schema:
+            $ref: '#/definitions/Tour_Demo'
+        '404':
+          description: Tour not found!
+      operationId: get_get_tour
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - tours
+  /tours/{id}/update:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    put:
+      responses:
+        '200':
+          description: Successfully updated Tour
+          schema:
+            $ref: '#/definitions/Tour_Demo'
+        '404':
+          description: Tour not found!
+      operationId: put_update_tour
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Tour_Demo'
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - tours
+  /transportations/get:
+    get:
+      responses:
+        '200':
+          description: Successfully get list of Transportations
+          schema:
+            $ref: '#/definitions/transportation'
+      operationId: get_get_transportations
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - transportations
+  /transportations/post:
+    post:
+      responses:
+        '201':
+          description: Successfully created new Transportation
+          schema:
+            $ref: '#/definitions/transportation'
+      operationId: post_create_transportation
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/transportation'
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - transportations
+  /transportations/{id}/delete:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    delete:
+      responses:
+        '204':
+          description: Successfully removed Transportation
+        '404':
+          description: Transportation not found!
+      operationId: delete_delete_transportation
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - transportations
+  /transportations/{id}/get:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: Successfully get Transportation
+          schema:
+            $ref: '#/definitions/transportation'
+        '404':
+          description: Transportation not found!
+      operationId: get_get_transportation
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - transportations
+  /transportations/{id}/update:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    put:
+      responses:
+        '200':
+          description: Successfully updated City
+          schema:
+            $ref: '#/definitions/transportation'
+        '404':
+          description: Transportation not found!
+      operationId: put_update_transportation
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/transportation'
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - transportations
+  /users/get:
+    get:
+      responses:
+        '200':
+          description: Successfully get list of Users
+          schema:
+            $ref: '#/definitions/User_Demo'
+      operationId: get_get_users
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - users
+  /users/post:
+    post:
+      responses:
+        '201':
+          description: Successfully created new User
+          schema:
+            $ref: '#/definitions/User_Demo'
+      operationId: post_create_user
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/User_Demo'
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - users
+  /users/{id}/delete:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    delete:
+      responses:
+        '204':
+          description: Successfully removed User
+        '404':
+          description: User not found!
+      operationId: delete_delete_user
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - users
+  /users/{id}/get:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    get:
+      responses:
+        '200':
+          description: Successfully get User
+          schema:
+            $ref: '#/definitions/User_Demo'
+        '404':
+          description: User not found!
+      operationId: get_get_user
+      parameters:
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - users
+  /users/{id}/update:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+    put:
+      responses:
+        '200':
+          description: Successfully updated User
+          schema:
+            $ref: '#/definitions/User_Demo'
+        '404':
+          description: User not found!
+      operationId: put_update_user
+      parameters:
+        - name: payload
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/User_Demo'
+        - required: true
+          in: header
+          description: Auth JWT token
+          name: Auth
+          type: string
+      tags:
+        - users
+info:
+  title: Travel Agency API
+  version: 1.0.0
+  description: Swagger documentation of Travel Agency API
+produces:
+  - application/json
+consumes:
+  - application/json
+tags:
+  - name: customers
+    description: CRUD operations for Customer essence
+  - name: countries
+    description: CRUD operations for Country essence
+  - name: tours
+    description: CRUD operations for Tour essence
+  - name: tourist-attractions
+    description: CRUD operations for Tourist Attraction essence
+  - name: cities
+    description: CRUD operations for City essence
+  - name: transportations
+    description: CRUD operations for Transportation essence
+  - name: customer_addresses
+    description: CRUD operations for Customer addresses essence
+  - name: hotels
+    description: CRUD operations for Hotel addresses essence
+  - name: users
+    description: CRUD operations for User essence
+definitions:
+  Customer_Demo:
+    properties:
+      first_name:
+        type: string
+        default: Julia
+      middle_name:
+        type: string
+        default: Bogdanivna
+      last_name:
+        type: string
+        default: Zanevych
+      phone:
+        type: string
+        default: '0731213007'
+      date_of_birthday:
+        type: string
+        default: '2002-07-14'
+      gender:
+        type: string
+        default: FEMALE
+      is_covid_vaccinated:
+        type: boolean
+      is_blocked:
+        type: boolean
+    type: object
+  Country_Demo:
+    properties:
+      country_name:
+        type: string
+        default: Ukraine
+      official_language:
+        type: string
+        default: Ukrainian
+      population:
+        type: integer
+        default: 45000000
+      details:
+        type: string
+        default: details
+    type: object
+  Tour_Demo:
+    properties:
+      name:
+        type: string
+        default: Uni Sharm Aqua Park
+      price:
+        type: string
+        default: 300
+      person_count:
+        type: string
+        default: 3
+      start_time:
+        type: string
+        default: '2021-09-19'
+      end_time:
+        type: string
+        default: '2002-09-25'
+      description:
+        type: string
+        default: Cool tour on Egypt
+      recommended_pocket_money:
+        type: integer
+        default: 150
+    type: object
+  Tourist_Attraction_Demo:
+    properties:
+      name:
+        type: string
+        default: Sharm
+      type:
+        type: string
+        default: EXCURSION
+      city_id:
+        type: integer
+        default: 1
+      details:
+        type: string
+        default: Curious tour of the underground city
+    type: object
+  city:
+    properties:
+      city_name:
+        type: string
+        default: Lviv
+      country_id:
+        type: integer
+        default: 1
+      city_latitude:
+        type: string
+        default: 18
+      city_longitude:
+        type: integer
+        default: 23
+      details:
+        type: string
+        default: One of the most beautiful cities of Ukraine
+    type: object
+  transportation:
+    properties:
+      tour_id:
+        type: integer
+        default: 1
+      transport_type:
+        type: string
+        default: PLANE
+      start_time:
+        type: string
+        default: '2021-09-19'
+      end_time:
+        type: string
+        default: '2002-09-25'
+      start_city_id:
+        type: integer
+        default: 1
+      end_city_id:
+        type: integer
+        default: 2
+      details:
+        type: string
+        default: Plane is power!!!
+    type: object
+  customer_addresses:
+    properties:
+      city_id:
+        type: integer
+        default: 1
+      zip_code:
+        type: string
+        default: 78AO1
+      street:
+        type: string
+        default: Ivan Mazepa
+      house_number:
+        type: string
+        default: 9A
+      apartment_number:
+        type: integer
+        default: 9
+    type: object
+  hotel:
+    properties:
+      name:
+        type: string
+        default: Grand
+      hotel_class:
+        type: string
+        default: USUAL
+      city_id:
+        type: integer
+        default: 1
+      is_animals_allowed:
+        type: boolean
+      details:
+        type: string
+        default: The best place!!!
+    type: object
+  User_Demo:
+    properties:
+      first_name:
+        type: string
+        default: Julia
+      middle_name:
+        type: string
+        default: Bogdanivna
+      last_name:
+        type: string
+        default: Zanevych
+      phone:
+        type: string
+        default: '0731213007'
+      date_of_birthday:
+        type: string
+        default: '2002-07-14'
+      gender:
+        type: string
+        default: FEMALE
+      is_baned:
+        type: boolean
+      password_hash:
+        type: string
+        default: Ju234lia
+    type: object
+responses:
+  ParseError:
+    description: When a mask can't be parsed
+  MaskError:
+    description: When any error occurs on mask
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /Julia47/travel_agency/1.0.0
+schemes:
+ - https
