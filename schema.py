@@ -231,9 +231,21 @@ user_model = api.model('User_Demo', {
     'date_of_birthday': fields.String('2002-07-14'),
     'gender': fields.String('FEMALE'),
     'is_baned': fields.Boolean(),
-    'password_hash':fields.String('Ju234lia')
+    'password_hash': fields.String('Ju234lia')
 
 })
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
+
+
+# class TourAttractionSchema(ma.Schema):
+#     class Meta:
+#         fields = (
+#             'tour_id',
+#             'tourist_attractions_id'
+#         )
+#
+#
+# tour_attraction_schema = TourAttractionSchema()
+# tour_attraction_s_schema = TourAttractionSchema(many=True)
