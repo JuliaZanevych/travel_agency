@@ -20,18 +20,29 @@ class CreateTour(Resource):
     def post(self):
         json = request.json
 
-        tour = Tour(
-            name=json.get('name'),
-            price=json.get('price'),
-            person_count=json.get('person_count'),
-            start_time=datetime.strptime(json.get('start_time'), "%Y-%m-%d"),
-            end_time=datetime.strptime(json.get('end_time'), "%Y-%m-%d"),
-            description=json.get('description'),
-            recommended_pocket_money=json.get('recommended_pocket_money')
-        )
-        db.session.add(tour)
-        db.session.commit()
-
+        try:
+            tour = Tour(
+                name=json.get('name'),
+                price=json.get('price'),
+                person_count=json.get('person_count'),
+                start_time=datetime.strptime(json.get('start_time'), "%Y-%m-%d"),
+                end_time=datetime.strptime(json.get('end_time'), "%Y-%m-%d"),
+                description=json.get('description'),
+                recommended_pocket_money=json.get('recommended_pocket_money')
+            )
+            db.session.add(tour)
+            db.session.commit()
+        except Exception as e:
+            orig = e.orig
+            if orig:
+                args = orig.args
+                if len(args) >= 2 and args[0] == 1062:
+                    error_message = args[1]
+                    if 'tours.name' in error_message:
+                        res = jsonify({'message': 'There is already the tour with this name!'})
+                        res.status_code = 409
+                        return res
+            raise e
         res = jsonify(tour_schema.dump(tour))
         res.status_code = 201
         return res
@@ -75,14 +86,26 @@ class UpdateTour(Resource):
             res = jsonify({'message': 'Tour not found!'})
             res.status_code = 404
             return res
-        tour.name = json.get('name')
-        tour.price = json.get('price')
-        tour.person_count = json.get('person_count')
-        tour.start_time = datetime.strptime(json.get('start_time'), "%Y-%m-%d")
-        tour.end_time = datetime.strptime(json.get('end_time'), "%Y-%m-%d")
-        tour.description = json.get('description')
-        tour.recommended_pocket_money = json.get('recommended_pocket_money')
-        db.session.commit()
+        try:
+            tour.name = json.get('name')
+            tour.price = json.get('price')
+            tour.person_count = json.get('person_count')
+            tour.start_time = datetime.strptime(json.get('start_time'), "%Y-%m-%d")
+            tour.end_time = datetime.strptime(json.get('end_time'), "%Y-%m-%d")
+            tour.description = json.get('description')
+            tour.recommended_pocket_money = json.get('recommended_pocket_money')
+            db.session.commit()
+        except Exception as e:
+            orig = e.orig
+            if orig:
+                args = orig.args
+                if len(args) >= 2 and args[0] == 1062:
+                    error_message = args[1]
+                    if 'tours.name' in error_message:
+                        res = jsonify({'message': 'There is already the tour with this name!'})
+                        res.status_code = 409
+                        return res
+            raise e
         return jsonify(tour_schema.dump(tour))
 
 
