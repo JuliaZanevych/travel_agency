@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import bcrypt
 from flask import Response, request, jsonify
 from flask_restx import Namespace, Resource
 from werkzeug.exceptions import NotFound
@@ -7,6 +8,7 @@ from werkzeug.exceptions import NotFound
 from config import api, db
 from model import User
 from schema import user_model, user_schema, users_schema
+from flask_bcrypt import Bcrypt
 
 ns = Namespace('users', description='CRUD operations for User essence')
 api.add_namespace(ns)
@@ -30,6 +32,8 @@ class CreateUser(Resource):
             is_baned=json.get('is_baned'),
             password_hash=json.get('password_hash')
         )
+        hashed = bcrypt.hashpw(user.password_hash.encode('utf-8'), bcrypt.gensalt())
+        user.password_hash = hashed
         db.session.add(user)
         db.session.commit()
 

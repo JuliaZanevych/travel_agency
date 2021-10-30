@@ -18,15 +18,25 @@ class CreateCountry(Resource):
     def post(self):
         json = request.json
 
-        country = Country(
-            country_name=json.get('country_name'),
-            official_language=json.get('official_language'),
-            population=json.get('population'),
-            details=json.get('details'),
-        )
-        db.session.add(country)
-        db.session.commit()
-
+        try:
+            country = Country(
+                country_name=json.get('country_name'),
+                official_language=json.get('official_language'),
+                population=json.get('population'),
+                details=json.get('details'),
+            )
+            db.session.add(country)
+            db.session.commit()
+        except Exception as e:
+            orig = e.orig
+            if orig:
+                args = orig.args
+                if len(args) >= 2 and args[0] == 1062:
+                    error_message = args[1]
+                    if 'countries.country_name' in error_message:
+                        res = jsonify({'message': 'There is already the country with this name!'})
+                        res.status_code = 409
+                        return res
         res = jsonify(country_schema.dump(country))
         res.status_code = 201
         return res
@@ -71,11 +81,22 @@ class UpdateCountry(Resource):
             res = jsonify({'message': 'Country not found!'})
             res.status_code = 404
             return res
-        country.country_name = json.get('country_name')
-        country.official_language = json.get('official_language')
-        country.population = json.get('population')
-        country.details = json.get('details')
-        db.session.commit()
+        try:
+            country.country_name = json.get('country_name')
+            country.official_language = json.get('official_language')
+            country.population = json.get('population')
+            country.details = json.get('details')
+            db.session.commit()
+        except Exception as e:
+            orig = e.orig
+            if orig:
+                args = orig.args
+                if len(args) >= 2 and args[0] == 1062:
+                    error_message = args[1]
+                    if 'countries.country_name' in error_message:
+                        res = jsonify({'message': 'There is already the country with this name!'})
+                        res.status_code = 409
+                        return res
         return jsonify(country_schema.dump(country))
 
 

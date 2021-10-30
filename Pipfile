@@ -12,6 +12,9 @@ marshmallow-sqlalchemy = "*"
 flask-restx = "*"
 pymysql = "*"
 cryptography = "*"
+alembic = "*"
+bcrypt = "*"
+flask-bcrypt = "*"
 
 [dev-packages]
 
