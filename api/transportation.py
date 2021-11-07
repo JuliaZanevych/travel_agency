@@ -29,9 +29,26 @@ class CreateTransportation(Resource):
             end_city_id=json.get('end_city_id'),
             details=json.get('details'),
         )
-        db.session.add(transportation)
-        db.session.commit()
-
+        try:
+            db.session.add(transportation)
+            db.session.commit()
+        except Exception as e:
+            orig = e.orig
+            if orig:
+                args = orig.args
+                if len(args) >= 2 and args[0] == 1062:
+                    error_message = args[1]
+                    if 'Duplicate entry' in error_message:
+                        res = jsonify({'message': 'There is already address for this customer!!'})
+                        res.status_code = 409
+                        return res
+                if len(args) >= 2 and args[0] == 1452:
+                    error_message = args[1]
+                    if 'Cannot add or update a child row' in error_message:
+                        res = jsonify({'message': 'There is no such father row!!'})
+                        res.status_code = 409
+                        return res
+            raise e
         res = jsonify(transportation_schema.dump(transportation))
         res.status_code = 201
         return res
@@ -76,14 +93,32 @@ class UpdateTransportation(Resource):
             res = jsonify({'message': 'Transportation not found!'})
             res.status_code = 404
             return res
-        transportation.tour_id = json.get('tour_id')
-        transportation.transport_type = json.get('transport_type')
-        transportation.start_time = datetime.strptime(json.get('start_time'), "%Y-%m-%d")
-        transportation.end_time = datetime.strptime(json.get('end_time'), "%Y-%m-%d")
-        transportation.start_city_id = json.get('start_city_id')
-        transportation.end_city_id = json.get('end_city_id')
-        transportation.details = json.get('details')
-        db.session.commit()
+        try:
+            transportation.tour_id = json.get('tour_id')
+            transportation.transport_type = json.get('transport_type')
+            transportation.start_time = datetime.strptime(json.get('start_time'), "%Y-%m-%d")
+            transportation.end_time = datetime.strptime(json.get('end_time'), "%Y-%m-%d")
+            transportation.start_city_id = json.get('start_city_id')
+            transportation.end_city_id = json.get('end_city_id')
+            transportation.details = json.get('details')
+            db.session.commit()
+        except Exception as e:
+            orig = e.orig
+            if orig:
+                args = orig.args
+                if len(args) >= 2 and args[0] == 1062:
+                    error_message = args[1]
+                    if 'Duplicate entry' in error_message:
+                        res = jsonify({'message': 'There is already address for this customer!!'})
+                        res.status_code = 409
+                        return res
+                if len(args) >= 2 and args[0] == 1452:
+                    error_message = args[1]
+                    if 'Cannot add or update a child row' in error_message:
+                        res = jsonify({'message': 'There is no such father row!!'})
+                        res.status_code = 409
+                        return res
+            raise e
         return jsonify(transportation_schema.dump(transportation))
 
 

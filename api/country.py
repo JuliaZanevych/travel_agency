@@ -112,6 +112,17 @@ class DeleteCountry(Resource):
             res = jsonify({'message': 'Country not found!'})
             res.status_code = 404
             return res
-        db.session.delete(country)
-        db.session.commit()
+        try:
+            db.session.delete(country)
+            db.session.commit()
+        except Exception as e:
+            orig = e.orig
+            if orig:
+                args = orig.args
+                if len(args) >= 2 and args[0] == 1451:
+                    error_message = args[1]
+                    if 'a foreign key constraint fails' in error_message:
+                        res = jsonify({'message': 'Something attached to country!'})
+                        res.status_code = 409
+                        return res
         return Response(status=204)

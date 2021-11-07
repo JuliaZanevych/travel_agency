@@ -25,9 +25,26 @@ class CreateHotel(Resource):
             is_animals_allowed=json.get('is_animals_allowed'),
             details=json.get('details'),
         )
-        db.session.add(hotel)
-        db.session.commit()
-
+        try:
+            db.session.add(hotel)
+            db.session.commit()
+        except Exception as e:
+            orig = e.orig
+            if orig:
+                args = orig.args
+                if len(args) >= 2 and args[0] == 1062:
+                    error_message = args[1]
+                    if 'Duplicate entry' in error_message:
+                        res = jsonify({'message': 'There is already address for this customer!!'})
+                        res.status_code = 409
+                        return res
+                if len(args) >= 2 and args[0] == 1452:
+                    error_message = args[1]
+                    if 'Cannot add or update a child row' in error_message:
+                        res = jsonify({'message': 'There is no such father row!!'})
+                        res.status_code = 409
+                        return res
+            raise e
         res = jsonify(hotel_schema.dump(hotel))
         res.status_code = 201
         return res
@@ -72,12 +89,30 @@ class UpdateHotel(Resource):
             res = jsonify({'message': 'Hotel not found!'})
             res.status_code = 404
             return res
-        hotel.name = json.get('name')
-        hotel.hotel_class = json.get('hotel_class')
-        hotel.city_id = json.get('city_id')
-        hotel.is_animals_allowed = json.get('is_animals_allowed')
-        hotel.details = json.get('details')
-        db.session.commit()
+        try:
+            hotel.name = json.get('name')
+            hotel.hotel_class = json.get('hotel_class')
+            hotel.city_id = json.get('city_id')
+            hotel.is_animals_allowed = json.get('is_animals_allowed')
+            hotel.details = json.get('details')
+            db.session.commit()
+        except Exception as e:
+            orig = e.orig
+            if orig:
+                args = orig.args
+                if len(args) >= 2 and args[0] == 1062:
+                    error_message = args[1]
+                    if 'Duplicate entry' in error_message:
+                        res = jsonify({'message': 'There is already address for this customer!!'})
+                        res.status_code = 409
+                        return res
+                if len(args) >= 2 and args[0] == 1452:
+                    error_message = args[1]
+                    if 'Cannot add or update a child row' in error_message:
+                        res = jsonify({'message': 'There is no such father row!!'})
+                        res.status_code = 409
+                        return res
+            raise e
         return jsonify(hotel_schema.dump(hotel))
 
 

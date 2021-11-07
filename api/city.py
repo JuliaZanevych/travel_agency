@@ -25,9 +25,25 @@ class CreateCity(Resource):
             city_longitude=json.get('city_longitude'),
             details=json.get('details'),
         )
-        db.session.add(city)
-        db.session.commit()
-
+        try:
+            db.session.add(city)
+            db.session.commit()
+        except Exception as e:
+            orig = e.orig
+            if orig:
+                args = orig.args
+                if len(args) >= 2 and args[0] == 1451:
+                    error_message = args[1]
+                    if 'a foreign key constraint fails' in error_message:
+                        res = jsonify({'message': 'Something attached to cities!'})
+                        res.status_code = 409
+                        return res
+                if len(args) >= 2 and args[0] == 1452:
+                    error_message = args[1]
+                    if 'Cannot add or update a child row' in error_message:
+                        res = jsonify({'message': 'There is no such father row!!'})
+                        res.status_code = 409
+                        return res
         res = jsonify(city_schema.dump(city))
         res.status_code = 201
         return res
@@ -72,12 +88,29 @@ class UpdateCity(Resource):
             res = jsonify({'message': 'City not found!'})
             res.status_code = 404
             return res
-        city.city_name = json.get('city_name')
-        city.country_id = json.get('country_id'),
-        city.city_latitude = json.get('city_latitude')
-        city.city_longitude = json.get('city_longitude')
-        city.details = json.get('details')
-        db.session.commit()
+        try:
+            city.city_name = json.get('city_name')
+            city.country_id = json.get('country_id'),
+            city.city_latitude = json.get('city_latitude')
+            city.city_longitude = json.get('city_longitude')
+            city.details = json.get('details')
+            db.session.commit()
+        except Exception as e:
+            orig = e.orig
+            if orig:
+                args = orig.args
+                if len(args) >= 2 and args[0] == 1451:
+                    error_message = args[1]
+                    if 'a foreign key constraint fails' in error_message:
+                        res = jsonify({'message': 'Something attached to cities!'})
+                        res.status_code = 409
+                        return res
+                if len(args) >= 2 and args[0] == 1452:
+                    error_message = args[1]
+                    if 'Cannot add or update a child row' in error_message:
+                        res = jsonify({'message': 'There is no such father row!!'})
+                        res.status_code = 409
+                        return res
         return jsonify(city_schema.dump(city))
 
 
@@ -93,6 +126,17 @@ class DeleteCity(Resource):
             res = jsonify({'message': 'City not found!'})
             res.status_code = 404
             return res
-        db.session.delete(city)
-        db.session.commit()
+        try:
+            db.session.delete(city)
+            db.session.commit()
+        except Exception as e:
+            orig = e.orig
+            if orig:
+                args = orig.args
+                if len(args) >= 2 and args[0] == 1451:
+                    error_message = args[1]
+                    if 'a foreign key constraint fails' in error_message:
+                        res = jsonify({'message': 'Something attached to cities!'})
+                        res.status_code = 409
+                        return res
         return Response(status=204)

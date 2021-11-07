@@ -14,7 +14,8 @@ class CustomerSchema(ma.Schema):
             'date_of_birthday',
             'gender',
             'is_covid_vaccinated',
-            'is_blocked'
+            'is_blocked',
+            'password_hash'
         )
 
 
@@ -26,7 +27,8 @@ customer_model = api.model('Customer_Demo', {
     'date_of_birthday': fields.String('2002-07-14'),
     'gender': fields.String('FEMALE'),
     'is_covid_vaccinated': fields.Boolean(),
-    'is_blocked': fields.Boolean()
+    'is_blocked': fields.Boolean(),
+    'password_hash': fields.String('Ju234lia')
 
 })
 
@@ -66,7 +68,8 @@ class TourSchema(ma.Schema):
             'start_time',
             'end_time',
             'description',
-            'recommended_pocket_money'
+            'recommended_pocket_money',
+            'tourist_attraction_ids'
         )
 
 
@@ -77,8 +80,8 @@ tour_model = api.model('Tour_Demo', {
     'start_time': fields.String('2021-09-19'),
     'end_time': fields.String('2002-09-25'),
     'description': fields.String('Cool tour on Egypt'),
-    'recommended_pocket_money': fields.Integer(150)
-
+    'recommended_pocket_money': fields.Integer(150),
+    'tourist_attraction_ids': fields.List(fields.Integer(), example=[1, 2, 3])
 })
 
 tour_schema = TourSchema()
@@ -100,7 +103,7 @@ tourist_attraction_model = api.model('Tourist_Attraction_Demo', {
     'name': fields.String('Sharm'),
     'type': fields.String('EXCURSION'),
     'city_id': fields.Integer(1),
-    'details': fields.String('Curious tour of the underground city'),
+    'details': fields.String('Curious tour of the underground city')
 
 })
 
@@ -164,6 +167,7 @@ class CustomerAddressesSchema(ma.Schema):
     class Meta:
         fields = (
             'id',
+            'customer_id',
             'city_id',
             'zip_code',
             'street',
@@ -173,6 +177,7 @@ class CustomerAddressesSchema(ma.Schema):
 
 
 customer_addresses_model = api.model('customer_addresses', {
+    'customer_id': fields.Integer(1),
     'city_id': fields.Integer(1),
     'zip_code': fields.String('78AO1'),
     'street': fields.String('Ivan Mazepa'),
@@ -239,6 +244,25 @@ user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 
 
+class VoucherSchema(ma.Schema):
+    class Meta:
+        fields = (
+            'id',
+            'tour_id',
+            'customer_ids'
+        )
+
+
+voucher_model = api.model('Voucher_Demo', {
+    'tour_id': fields.Integer(1),
+    'customer_ids': fields.List(fields.Integer(), example=[1, 2, 3])
+
+})
+
+voucher_schema = VoucherSchema()
+vouchers_schema = VoucherSchema(many=True)
+
+
 # class TourAttractionSchema(ma.Schema):
 #     class Meta:
 #         fields = (
@@ -249,3 +273,33 @@ users_schema = UserSchema(many=True)
 #
 # tour_attraction_schema = TourAttractionSchema()
 # tour_attraction_s_schema = TourAttractionSchema(many=True)
+
+class CustomerSchemaGet(ma.Schema):
+    class Meta:
+        fields = (
+            'id',
+            'first_name',
+            'middle_name',
+            'last_name',
+            'phone',
+            'date_of_birthday',
+            'gender',
+            'is_covid_vaccinated',
+            'is_blocked'
+        )
+
+
+customer_model_get = api.model('Customer_Demo_Get', {
+    'first_name': fields.String('Julia'),
+    'middle_name': fields.String('Bogdanivna'),
+    'last_name': fields.String('Zanevych'),
+    'phone': fields.String('0731213007'),
+    'date_of_birthday': fields.String('2002-07-14'),
+    'gender': fields.String('FEMALE'),
+    'is_covid_vaccinated': fields.Boolean(),
+    'is_blocked': fields.Boolean()
+
+})
+
+customer_schema_get = CustomerSchemaGet()
+customers_schema_get = CustomerSchemaGet(many=True)
