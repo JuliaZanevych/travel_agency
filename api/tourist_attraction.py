@@ -24,9 +24,25 @@ class CreateTouristAttraction(Resource):
             city_id=json.get('city_id'),
             details=json.get('details'),
         )
-        db.session.add(tourist_attraction)
-        db.session.commit()
-
+        try:
+            db.session.add(tourist_attraction)
+            db.session.commit()
+        except Exception as e:
+            orig = e.orig
+            if orig:
+                args = orig.args
+                if len(args) >= 2 and args[0] == 1451:
+                    error_message = args[1]
+                    if 'a foreign key constraint fails' in error_message:
+                        res = jsonify({'message': 'Something attached to cities!'})
+                        res.status_code = 409
+                        return res
+                if len(args) >= 2 and args[0] == 1452:
+                    error_message = args[1]
+                    if 'Cannot add or update a child row' in error_message:
+                        res = jsonify({'message': 'There is no such father row!!'})
+                        res.status_code = 409
+                        return res
         res = jsonify(tourist_attraction_schema.dump(tourist_attraction))
         res.status_code = 201
         return res
@@ -70,11 +86,28 @@ class UpdateTouristAttraction(Resource):
             res = jsonify({'message': 'Tourist Attraction not found!'})
             res.status_code = 404
             return res
-        tourist_attraction.name = json.get('name')
-        tourist_attraction.type = json.get('type')
-        tourist_attraction.city_id = json.get('city_id'),
-        tourist_attraction.details = json.get('details')
-        db.session.commit()
+        try:
+            tourist_attraction.name = json.get('name')
+            tourist_attraction.type = json.get('type')
+            tourist_attraction.city_id = json.get('city_id'),
+            tourist_attraction.details = json.get('details')
+            db.session.commit()
+        except Exception as e:
+            orig = e.orig
+            if orig:
+                args = orig.args
+                if len(args) >= 2 and args[0] == 1451:
+                    error_message = args[1]
+                    if 'a foreign key constraint fails' in error_message:
+                        res = jsonify({'message': 'Something attached to cities!'})
+                        res.status_code = 409
+                        return res
+                if len(args) >= 2 and args[0] == 1452:
+                    error_message = args[1]
+                    if 'Cannot add or update a child row' in error_message:
+                        res = jsonify({'message': 'There is no such father row!!'})
+                        res.status_code = 409
+                        return res
         return jsonify(tourist_attraction_schema.dump(tourist_attraction))
 
 

@@ -17,17 +17,34 @@ class CreateCustomerAddresses(Resource):
     @ns.response(201, description='Successfully created new Customer addresses', model=customer_addresses_model)
     def post(self):
         json = request.json
-
-        customer_addresses = CustomerAddresses(
-            city_id=json.get('city_id'),
-            zip_code=json.get('zip_code'),
-            street=json.get('street'),
-            house_number=json.get('house_number'),
-            apartment_number=json.get('apartment_number'),
-        )
-        db.session.add(customer_addresses)
-        db.session.commit()
-
+        try:
+            customer_addresses = CustomerAddresses(
+                id=json.get('customer_id'),
+                city_id=json.get('city_id'),
+                zip_code=json.get('zip_code'),
+                street=json.get('street'),
+                house_number=json.get('house_number'),
+                apartment_number=json.get('apartment_number'),
+            )
+            db.session.add(customer_addresses)
+            db.session.commit()
+        except Exception as e:
+            orig = e.orig
+            if orig:
+                args = orig.args
+                if len(args) >= 2 and args[0] == 1062:
+                    error_message = args[1]
+                    if 'Duplicate entry' in error_message:
+                        res = jsonify({'message': 'There is already address for this customer!!'})
+                        res.status_code = 409
+                        return res
+                if len(args) >= 2 and args[0] == 1452:
+                    error_message = args[1]
+                    if 'Cannot add or update a child row' in error_message:
+                        res = jsonify({'message': 'There is no such father row!!'})
+                        res.status_code = 409
+                        return res
+            raise e
         res = jsonify(customer_addresses_schema.dump(customer_addresses))
         res.status_code = 201
         return res
@@ -72,12 +89,30 @@ class UpdateCustomerAddresses(Resource):
             res = jsonify({'message': 'Customer addresses not found!'})
             res.status_code = 404
             return res
-        customer_addresses.city_id = json.get('city_id')
-        customer_addresses.zip_code = json.get('zip_code')
-        customer_addresses.street = json.get('street')
-        customer_addresses.house_number = json.get('house_number')
-        customer_addresses.apartment_number = json.get('apartment_number')
-        db.session.commit()
+        try:
+            customer_addresses.city_id = json.get('city_id')
+            customer_addresses.zip_code = json.get('zip_code')
+            customer_addresses.street = json.get('street')
+            customer_addresses.house_number = json.get('house_number')
+            customer_addresses.apartment_number = json.get('apartment_number')
+            db.session.commit()
+        except Exception as e:
+            orig = e.orig
+            if orig:
+                args = orig.args
+                if len(args) >= 2 and args[0] == 1062:
+                    error_message = args[1]
+                    if 'Duplicate entry' in error_message:
+                        res = jsonify({'message': 'There is already address for this customer!!'})
+                        res.status_code = 409
+                        return res
+                if len(args) >= 2 and args[0] == 1452:
+                    error_message = args[1]
+                    if 'Cannot add or update a child row' in error_message:
+                        res = jsonify({'message': 'There is no such father row!!'})
+                        res.status_code = 409
+                        return res
+            raise e
         return jsonify(customer_addresses_schema.dump(customer_addresses))
 
 

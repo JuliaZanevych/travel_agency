@@ -5,8 +5,10 @@ from flask_restx import Namespace, Resource
 from werkzeug.exceptions import NotFound
 
 from config import api, db
-from model import Tour
+from model import Tour, TourAttraction
 from schema import tour_model, tour_schema, tours_schema
+
+from sqlalchemy import delete
 
 ns = Namespace('tours', description='CRUD operations for Tour essence')
 api.add_namespace(ns)
@@ -32,6 +34,7 @@ class CreateTour(Resource):
             )
             db.session.add(tour)
             db.session.commit()
+
         except Exception as e:
             orig = e.orig
             if orig:
@@ -43,6 +46,39 @@ class CreateTour(Resource):
                         res.status_code = 409
                         return res
             raise e
+
+        tour_id = tour.id
+        tourist_attraction_ids = json.get('tourist_attraction_ids')
+
+        if tourist_attraction_ids:
+            for tourist_attraction_id in set(tourist_attraction_ids):
+                tour_attraction = TourAttraction(
+                    tour_id=tour_id,
+                    tourist_attractions_id=tourist_attraction_id
+                )
+                db.session.add(tour_attraction)
+            try:
+                db.session.commit()
+            except Exception as e:
+                orig = e.orig
+                if orig:
+                    args = orig.args
+                    if len(args) >= 2 and args[0] == 1062:
+                        error_message = args[1]
+                        if 'Duplicate entry' in error_message:
+                            res = jsonify({'message': 'There is already address for this customer!!'})
+                            res.status_code = 409
+                            return res
+                    if len(args) >= 2 and args[0] == 1452:
+                        error_message = args[1]
+                        if 'Cannot add or update a child row' in error_message:
+                            res = jsonify({'message': 'There is no such father row!!'})
+                            res.status_code = 409
+                            return res
+                raise e
+
+        tour.tourist_attraction_ids = tourist_attraction_ids
+
         res = jsonify(tour_schema.dump(tour))
         res.status_code = 201
         return res
@@ -60,7 +96,14 @@ class GetTour(Resource):
             res = jsonify({'message': 'Tour not found!'})
             res.status_code = 404
             return res
-        return jsonify(tour_schema.dump(tour))
+
+        tour_attractions = TourAttraction.query.filter_by(tour_id=id).all()
+        tourist_attractions_ids = [tour_attraction.tourist_attractions_id for tour_attraction in tour_attractions]
+
+        tour_dto = tour_schema.dump(tour)
+        tour_dto['tourist_attractions_ids'] = tourist_attractions_ids
+
+        return jsonify(tour_dto)
 
 
 @ns.route('/get')
@@ -106,6 +149,69 @@ class UpdateTour(Resource):
                         res.status_code = 409
                         return res
             raise e
+        input_attractions_ids = set(json.get('tourist_attraction_ids'))
+
+        tour_attractions = TourAttraction.query.filter_by(tour_id=id).all()
+        existing_attractions_ids = {tour_attraction.tourist_attractions_id for tour_attraction in tour_attractions}
+
+        removed_attractions_ids = existing_attractions_ids - input_attractions_ids
+        if removed_attractions_ids:
+            # deleted_attractions = TourAttraction.query.filter_by(
+            #    tour_id=id and TourAttraction.tourist_attractions_id.in_(removed_attractions_ids)).delete()
+            # deleted_attractions = TourAttraction.delete().where(
+            #     TourAttraction.tour_id == id and TourAttraction.tourist_attractions_id.in_(removed_attractions_ids))
+            db.session.query(TourAttraction).filter(
+                TourAttraction.tour_id == id).filter(TourAttraction.tourist_attractions_id.in_(
+                    removed_attractions_ids)).delete()
+        # db.session.delete(deleted_attractions)
+        try:
+            db.session.commit()
+        except Exception as e:
+            orig = e.orig
+            if orig:
+                args = orig.args
+                if len(args) >= 2 and args[0] == 1062:
+                    error_message = args[1]
+                    if 'Duplicate entry' in error_message:
+                        res = jsonify({'message': 'There is already address for this customer!!'})
+                        res.status_code = 409
+                        return res
+                if len(args) >= 2 and args[0] == 1452:
+                    error_message = args[1]
+                    if 'Cannot add or update a child row' in error_message:
+                        res = jsonify({'message': 'There is no such father row!!'})
+                        res.status_code = 409
+                        return res
+            raise e
+
+        new_attractions_ids = input_attractions_ids - existing_attractions_ids
+        if new_attractions_ids:
+            for tourist_attraction_id in new_attractions_ids:
+                tour_attraction = TourAttraction(
+                    tour_id=id,
+                    tourist_attractions_id=tourist_attraction_id
+                )
+                db.session.add(tour_attraction)
+            try:
+                db.session.commit()
+            except Exception as e:
+                orig = e.orig
+                if orig:
+                    args = orig.args
+                    if len(args) >= 2 and args[0] == 1062:
+                        error_message = args[1]
+                        if 'Duplicate entry' in error_message:
+                            res = jsonify({'message': 'There is already address for this customer!!'})
+                            res.status_code = 409
+                            return res
+                    if len(args) >= 2 and args[0] == 1452:
+                        error_message = args[1]
+                        if 'Cannot add or update a child row' in error_message:
+                            res = jsonify({'message': 'There is no such father row!!'})
+                            res.status_code = 409
+                            return res
+                raise e
+
         return jsonify(tour_schema.dump(tour))
 
 
@@ -121,6 +227,17 @@ class DeleteTour(Resource):
             res = jsonify({'message': 'Tour not found!'})
             res.status_code = 404
             return res
-        db.session.delete(tour)
-        db.session.commit()
+        try:
+            db.session.delete(tour)
+            db.session.commit()
+        except Exception as e:
+            orig = e.orig
+            if orig:
+                args = orig.args
+                if len(args) >= 2 and args[0] == 1451:
+                    error_message = args[1]
+                    if 'a foreign key constraint fails' in error_message:
+                        res = jsonify({'message': 'Something attached to tour!'})
+                        res.status_code = 409
+                        return res
         return Response(status=204)

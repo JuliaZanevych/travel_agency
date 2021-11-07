@@ -34,6 +34,7 @@ class Customer(db.Model):
     gender = db.Column(db.String(64), nullable=False)
     is_covid_vaccinated = db.Column(db.Boolean, nullable=False, default=False)
     is_blocked = db.Column(db.Boolean, default=False)
+    password_hash = db.Column(db.String(64), nullable=False)
     # v_customers = db.relationship('v_customers', secondary=voucher_customers)
 
 
@@ -96,7 +97,7 @@ class Transportation(db.Model):
 
 class CustomerAddresses(db.Model):
     __tablename__ = 'customer_addresses'
-    id = db.Column(db.Integer, db.ForeignKey('customers.id'), primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, db.ForeignKey('customers.id'), primary_key=True)
     city_id = db.Column(db.Integer, db.ForeignKey('cities.id'), nullable=False)
     zip_code = db.Column(db.String(16), nullable=False)
     street = db.Column(db.String(34), nullable=False)
@@ -137,9 +138,9 @@ class Vouchers(db.Model):
 
 class VoucherCustomers(db.Model):
     __tablename__ = 'voucher_customers'
-    column_not_exist_in_db = db.Column(db.Integer, primary_key=True)
-    voucher_id = db.Column(db.Integer, db.ForeignKey("vouchers.id"), nullable=False)
-    customer_id = db.Column(db.Integer, db.ForeignKey("customers.id"), nullable=False)
+    # column_not_exist_in_db = db.Column(db.Integer, primary_key=True)
+    voucher_id = db.Column(db.Integer, db.ForeignKey("vouchers.id"), primary_key=True, nullable=False)
+    customer_id = db.Column(db.Integer, db.ForeignKey("customers.id"),  primary_key=True, nullable=False)
 
     vouchers = db.relationship("Vouchers")
     customers = db.relationship("Customer")
@@ -157,9 +158,10 @@ class TourHotels(db.Model):
 
 class TourAttraction(db.Model):
     __tablename__ = 'tour_attractions'
-    column_not_exist_in_db = db.Column(db.Integer, primary_key=True)
-    tour_id = db.Column(db.Integer, db.ForeignKey("tours.id"), nullable=False)
-    tourist_attractions_id = db.Column(db.Integer, db.ForeignKey("tourist_attractions.id"), nullable=False)
+    # column_not_exist_in_db = db.Column(db.Integer, primary_key=True)
+    tour_id = db.Column(db.Integer, db.ForeignKey("tours.id"), primary_key=True, nullable=False)
+    tourist_attractions_id = db.Column(db.Integer, db.ForeignKey("tourist_attractions.id"), primary_key=True,
+                                       nullable=False)
 
     tours = db.relationship("Tour")
     tourist_attractions = db.relationship("TouristAttraction")

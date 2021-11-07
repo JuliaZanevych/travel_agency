@@ -10,7 +10,8 @@ from api import \
     transportation, \
     customer_addresses, \
     hotel, \
-    user
+    user, \
+    voucher
 
 if __name__ == '__main__':
     app.run(debug=True)
