@@ -2,6 +2,7 @@ from flask import Response, request, jsonify
 from flask_restx import Namespace, Resource
 from werkzeug.exceptions import NotFound
 
+from api.auth import auth
 from config import api, db
 from model import Country
 from schema import country_model, country_schema, countries_schema
@@ -13,8 +14,11 @@ api.add_namespace(ns)
 @ns.route('/post')
 class CreateCountry(Resource):
     @ns.expect(country_model)
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(201, description='Successfully created new Country', model=country_model)
+    @ns.response(401, description='Customer is not authenticated!', model=country_model)
+    @ns.response(403, description='Customer is not authorized!', model=country_model)
+    @auth("CREATE_COUNTRY")
     def post(self):
         json = request.json
 
@@ -44,9 +48,12 @@ class CreateCountry(Resource):
 
 @ns.route('/<int:id>/get')
 class GetCountry(Resource):
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(200, description='Successfully get Country', model=country_model)
     @ns.response(404, description='Country not found!')
+    @ns.response(401, description='Customer is not authenticated!', model=country_model)
+    @ns.response(403, description='Customer is not authorized!', model=country_model)
+    @auth("GET_COUNTRY_BY_ID")
     def get(self, id):
         try:
             country = Country.query.get_or_404(id)
@@ -60,8 +67,11 @@ class GetCountry(Resource):
 
 @ns.route('/get')
 class GetCustomers(Resource):
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(200, description='Successfully get list of Countries', model=country_model)
+    @ns.response(401, description='Customer is not authenticated!', model=country_model)
+    @ns.response(403, description='Customer is not authorized!', model=country_model)
+    @auth("GET_COUNTRIES_LIST")
     def get(self):
         return jsonify(countries_schema.dump(Country.query.all()))
 
@@ -69,9 +79,12 @@ class GetCustomers(Resource):
 @ns.route('/<int:id>/update')
 class UpdateCountry(Resource):
     @ns.expect(country_model)
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(200, description='Successfully updated Country', model=country_model)
     @ns.response(404, description='Country not found!')
+    @ns.response(401, description='Customer is not authenticated!', model=country_model)
+    @ns.response(403, description='Customer is not authorized!', model=country_model)
+    @auth("UPDATE_COUNTRY")
     def put(self, id):
         json = request.json
 
@@ -102,9 +115,12 @@ class UpdateCountry(Resource):
 
 @ns.route('/<int:id>/delete')
 class DeleteCountry(Resource):
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(204, description='Successfully removed Country')
     @ns.response(404, description='Country not found!')
+    @ns.response(401, description='Customer is not authenticated!', model=country_model)
+    @ns.response(403, description='Customer is not authorized!', model=country_model)
+    @auth("DELETE_COUNTRY")
     def delete(self, id):
         try:
             country = Country.query.get_or_404(id)

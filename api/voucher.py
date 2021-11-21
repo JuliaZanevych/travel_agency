@@ -4,6 +4,7 @@ from flask import Response, request, jsonify
 from flask_restx import Namespace, Resource
 from werkzeug.exceptions import NotFound
 
+from api.auth import auth
 from config import api, db
 from model import Vouchers, VoucherCustomers
 from schema import voucher_model, voucher_schema, vouchers_schema
@@ -15,8 +16,11 @@ api.add_namespace(ns)
 @ns.route('/post')
 class CreateVoucher(Resource):
     @ns.expect(voucher_model)
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(201, description='Successfully created new Voucher', model=voucher_model)
+    @ns.response(401, description='Customer is not authenticated!', model=voucher_model)
+    @ns.response(403, description='Customer is not authorized!', model=voucher_model)
+    @auth("CREATE_VOUCHER")
     def post(self):
         json = request.json
 
@@ -83,9 +87,12 @@ class CreateVoucher(Resource):
 
 @ns.route('/<int:id>/get')
 class GetVoucher(Resource):
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(200, description='Successfully get Voucher', model=voucher_model)
     @ns.response(404, description='Voucher not found!')
+    @ns.response(401, description='Customer is not authenticated!', model=voucher_model)
+    @ns.response(403, description='Customer is not authorized!', model=voucher_model)
+    @auth("GET_VOUCHER_BY_ID")
     def get(self, id):
         try:
             voucher = Vouchers.query.get_or_404(id)
@@ -105,8 +112,11 @@ class GetVoucher(Resource):
 
 @ns.route('/get')
 class GetVouchers(Resource):
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(200, description='Successfully get list of Vouchers', model=voucher_model)
+    @ns.response(401, description='Customer is not authenticated!', model=voucher_model)
+    @ns.response(403, description='Customer is not authorized!', model=voucher_model)
+    @auth("GET_VOUCHERS_LIST")
     def get(self):
         return jsonify(vouchers_schema.dump(Vouchers.query.all()))
 
@@ -114,9 +124,12 @@ class GetVouchers(Resource):
 @ns.route('/<int:id>/update')
 class UpdateVoucher(Resource):
     @ns.expect(voucher_model)
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(200, description='Successfully updated Voucher', model=voucher_model)
     @ns.response(404, description='Voucher not found!')
+    @ns.response(401, description='Customer is not authenticated!', model=voucher_model)
+    @ns.response(403, description='Customer is not authorized!', model=voucher_model)
+    @auth("UPDATE_VOUCHER")
     def put(self, id):
         json = request.json
 
@@ -207,9 +220,12 @@ class UpdateVoucher(Resource):
 
 @ns.route('/<int:id>/delete')
 class DeleteVoucher(Resource):
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(204, description='Successfully removed Voucher')
     @ns.response(404, description='Voucher not found!')
+    @ns.response(401, description='Customer is not authenticated!', model=voucher_model)
+    @ns.response(403, description='Customer is not authorized!', model=voucher_model)
+    @auth("DELETE_VOUCHER")
     def delete(self, id):
         try:
             voucher = Vouchers.query.get_or_404(id)

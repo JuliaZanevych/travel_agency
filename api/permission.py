@@ -4,33 +4,29 @@ from werkzeug.exceptions import NotFound
 
 from api.auth import auth
 from config import api, db
-from model import City
-from schema import city_model, city_schema, cities_schema
+from model import Permission
+from schema import permission_model, permission_schema, permissions_schema
 
-ns = Namespace('cities', description='CRUD operations for City essence')
+ns = Namespace('permissions', description='CRUD operations for Permission essence')
 api.add_namespace(ns)
 
 
 @ns.route('/post')
-class CreateCity(Resource):
-    @ns.expect(city_model)
+class CreatePermission(Resource):
+    @ns.expect(permission_model)
     @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
-    @ns.response(201, description='Successfully created new City', model=city_model)
-    @ns.response(401, description='Customer is not authenticated!', model=city_model)
-    @ns.response(403, description='Customer is not authorized!', model=city_model)
-    @auth("CREATE_CITY")
+    @ns.response(201, description='Successfully created new Permission', model=permission_model)
+    @ns.response(401, description='Customer is not authenticated!', model=permission_model)
+    @ns.response(403, description='Customer is not authorized!', model=permission_model)
+    @auth("CREATE_PERMISSION")
     def post(self):
         json = request.json
 
-        city = City(
-            city_name=json.get('city_name'),
-            country_id=json.get('country_id'),
-            city_latitude=json.get('city_latitude'),
-            city_longitude=json.get('city_longitude'),
-            details=json.get('details'),
+        permission = Permission(
+            method=json.get('method')
         )
         try:
-            db.session.add(city)
+            db.session.add(permission)
             db.session.commit()
         except Exception as e:
             orig = e.orig
@@ -48,65 +44,61 @@ class CreateCity(Resource):
                         res = jsonify({'message': 'There is no such father row!!'})
                         res.status_code = 409
                         return res
-        res = jsonify(city_schema.dump(city))
+        res = jsonify(permission_schema.dump(permission))
         res.status_code = 201
         return res
 
 
 @ns.route('/<int:id>/get')
-class GetCity(Resource):
+class GetPermission(Resource):
     @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
-    @ns.response(200, description='Successfully get City', model=city_model)
-    @ns.response(404, description='City not found!')
-    @ns.response(401, description='Customer is not authenticated!', model=city_model)
-    @ns.response(403, description='Customer is not authorized!', model=city_model)
-    @auth("GET_CITY_BY_ID")
+    @ns.response(200, description='Successfully get Permission', model=permission_model)
+    @ns.response(404, description='Permission not found!')
+    @ns.response(401, description='Customer is not authenticated!', model=permission_model)
+    @ns.response(403, description='Customer is not authorized!', model=permission_model)
+    @auth("GET_PERMISSION_BY_ID")
     def get(self, id):
         try:
-            city = City.query.get_or_404(id)
+            permission = Permission.query.get_or_404(id)
         except NotFound:
-            res = jsonify({'message': 'City not found!'})
+            res = jsonify({'message': 'Permission not found!'})
             res.status_code = 404
             return res
 
-        return jsonify(city_schema.dump(city))
+        return jsonify(permission_schema.dump(permission))
 
 
 @ns.route('/get')
-class GetCitys(Resource):
+class GetPermissions(Resource):
     @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
-    @ns.response(200, description='Successfully get list of Cities', model=city_model)
-    @ns.response(401, description='Customer is not authenticated!', model=city_model)
-    @ns.response(403, description='Customer is not authorized!', model=city_model)
-    @auth("GET_CITIES_LIST")
+    @ns.response(200, description='Successfully get list of Permissions', model=permission_model)
+    @ns.response(401, description='Customer is not authenticated!', model=permission_model)
+    @ns.response(403, description='Customer is not authorized!', model=permission_model)
+    @auth("GET_PERMISSIONS_LIST")
     def get(self):
-        return jsonify(cities_schema.dump(City.query.all()))
+        return jsonify(permissions_schema.dump(Permission.query.all()))
 
 
 @ns.route('/<int:id>/update')
-class UpdateCity(Resource):
-    @ns.expect(city_model)
+class UpdatePermission(Resource):
+    @ns.expect(permission_model)
     @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
-    @ns.response(200, description='Successfully updated City', model=city_model)
-    @ns.response(404, description='City not found!')
-    @ns.response(401, description='Customer is not authenticated!', model=city_model)
-    @ns.response(403, description='Customer is not authorized!', model=city_model)
-    @auth("UPDATE_CITY")
+    @ns.response(200, description='Successfully updated Permission', model=permission_model)
+    @ns.response(404, description='Permission not found!')
+    @ns.response(401, description='Customer is not authenticated!', model=permission_model)
+    @ns.response(403, description='Customer is not authorized!', model=permission_model)
+    @auth("UPDATE_PERMISSION")
     def put(self, id):
         json = request.json
 
         try:
-            city = City.query.get_or_404(id)
+            permission = Permission.query.get_or_404(id)
         except NotFound:
-            res = jsonify({'message': 'City not found!'})
+            res = jsonify({'message': 'Permission not found!'})
             res.status_code = 404
             return res
         try:
-            city.city_name = json.get('city_name')
-            city.country_id = json.get('country_id'),
-            city.city_latitude = json.get('city_latitude')
-            city.city_longitude = json.get('city_longitude')
-            city.details = json.get('details')
+            permission.method = json.get('method')
             db.session.commit()
         except Exception as e:
             orig = e.orig
@@ -124,26 +116,26 @@ class UpdateCity(Resource):
                         res = jsonify({'message': 'There is no such father row!!'})
                         res.status_code = 409
                         return res
-        return jsonify(city_schema.dump(city))
+        return jsonify(permission_schema.dump(permission))
 
 
 @ns.route('/<int:id>/delete')
-class DeleteCity(Resource):
+class DeletePermission(Resource):
     @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
-    @ns.response(204, description='Successfully removed City')
-    @ns.response(404, description='City not found!')
-    @ns.response(401, description='Customer is not authenticated!', model=city_model)
-    @ns.response(403, description='Customer is not authorized!', model=city_model)
-    @auth("DELETE_CITY")
+    @ns.response(204, description='Successfully removed Permission')
+    @ns.response(404, description='Permission not found!')
+    @ns.response(401, description='Customer is not authenticated!', model=permission_model)
+    @ns.response(403, description='Customer is not authorized!', model=permission_model)
+    @auth("DELETE_PERMISSION")
     def delete(self, id):
         try:
-            city = City.query.get_or_404(id)
+            permission = Permission.query.get_or_404(id)
         except NotFound:
-            res = jsonify({'message': 'City not found!'})
+            res = jsonify({'message': 'Permission not found!'})
             res.status_code = 404
             return res
         try:
-            db.session.delete(city)
+            db.session.delete(permission)
             db.session.commit()
         except Exception as e:
             orig = e.orig

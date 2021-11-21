@@ -15,6 +15,7 @@ cryptography = "*"
 alembic = "*"
 bcrypt = "*"
 flask-bcrypt = "*"
+flask-httpauth = "*"
 
 [dev-packages]
 
