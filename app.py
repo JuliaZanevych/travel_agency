@@ -11,7 +11,9 @@ from api import \
     customer_addresses, \
     hotel, \
     user, \
-    voucher
+    voucher, \
+    role, \
+    permission
 
 if __name__ == '__main__':
     app.run(debug=True)

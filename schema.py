@@ -3,10 +3,30 @@ from flask_restx import fields
 from config import ma, api
 
 
+class RoleSchema(ma.Schema):
+    class Meta:
+        fields = (
+            'id',
+            'name',
+            'permission_ids'
+        )
+
+
+role_model = api.model('Role_Demo', {
+    'name': fields.String('admin'),
+    'permission_ids': fields.List(fields.Integer(), example=[1, 2, 3])
+
+})
+
+role_schema = RoleSchema()
+roles_schema = RoleSchema(many=True)
+
+
 class CustomerSchema(ma.Schema):
     class Meta:
         fields = (
             'id',
+            'username',
             'first_name',
             'middle_name',
             'last_name',
@@ -15,11 +35,13 @@ class CustomerSchema(ma.Schema):
             'gender',
             'is_covid_vaccinated',
             'is_blocked',
-            'password_hash'
+            'password_hash',
+            'role_id'
         )
 
 
 customer_model = api.model('Customer_Demo', {
+    'username': fields.String('Julia47'),
     'first_name': fields.String('Julia'),
     'middle_name': fields.String('Bogdanivna'),
     'last_name': fields.String('Zanevych'),
@@ -28,12 +50,29 @@ customer_model = api.model('Customer_Demo', {
     'gender': fields.String('FEMALE'),
     'is_covid_vaccinated': fields.Boolean(),
     'is_blocked': fields.Boolean(),
-    'password_hash': fields.String('Ju234lia')
+    'password_hash': fields.String('Ju234lia'),
+    'role_id': fields.Integer(1)
 
 })
 
 customer_schema = CustomerSchema()
 customers_schema = CustomerSchema(many=True)
+
+
+class PermissionSchema(ma.Schema):
+    class Meta:
+        fields = (
+            'id',
+            'method'
+        )
+
+
+permission_model = api.model('Permission_Demo', {
+    'method': fields.String('GET_CUSTOMERS_LIST')
+})
+
+permission_schema = PermissionSchema()
+permissions_schema = PermissionSchema(many=True)
 
 
 class CountrySchema(ma.Schema):
@@ -78,7 +117,7 @@ tour_model = api.model('Tour_Demo', {
     'price': fields.String(300),
     'person_count': fields.String(3),
     'start_time': fields.String('2021-09-19'),
-    'end_time': fields.String('2002-09-25'),
+    'end_time': fields.String('2021-09-25'),
     'description': fields.String('Cool tour on Egypt'),
     'recommended_pocket_money': fields.Integer(150),
     'tourist_attraction_ids': fields.List(fields.Integer(), example=[1, 2, 3])
@@ -278,6 +317,7 @@ class CustomerSchemaGet(ma.Schema):
     class Meta:
         fields = (
             'id',
+            'username',
             'first_name',
             'middle_name',
             'last_name',
@@ -285,11 +325,13 @@ class CustomerSchemaGet(ma.Schema):
             'date_of_birthday',
             'gender',
             'is_covid_vaccinated',
-            'is_blocked'
+            'is_blocked',
+            'role_id'
         )
 
 
 customer_model_get = api.model('Customer_Demo_Get', {
+    'username': fields.String('Julia47'),
     'first_name': fields.String('Julia'),
     'middle_name': fields.String('Bogdanivna'),
     'last_name': fields.String('Zanevych'),
@@ -297,7 +339,8 @@ customer_model_get = api.model('Customer_Demo_Get', {
     'date_of_birthday': fields.String('2002-07-14'),
     'gender': fields.String('FEMALE'),
     'is_covid_vaccinated': fields.Boolean(),
-    'is_blocked': fields.Boolean()
+    'is_blocked': fields.Boolean(),
+    'role_id': fields.Integer(1)
 
 })
 

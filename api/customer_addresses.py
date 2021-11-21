@@ -2,6 +2,7 @@ from flask import Response, request, jsonify
 from flask_restx import Namespace, Resource
 from werkzeug.exceptions import NotFound
 
+from api.auth import auth
 from config import api, db
 from model import CustomerAddresses
 from schema import customer_addresses_model, customer_addresses_schema, customer_addressess_schema
@@ -13,8 +14,11 @@ api.add_namespace(ns)
 @ns.route('/post')
 class CreateCustomerAddresses(Resource):
     @ns.expect(customer_addresses_model)
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(201, description='Successfully created new Customer addresses', model=customer_addresses_model)
+    @ns.response(401, description='Customer is not authenticated!', model=customer_addresses_model)
+    @ns.response(403, description='Customer is not authorized!', model=customer_addresses_model)
+    @auth("CREATE_CUSTOMER_ADDRESSE")
     def post(self):
         json = request.json
         try:
@@ -52,9 +56,12 @@ class CreateCustomerAddresses(Resource):
 
 @ns.route('/<int:id>/get')
 class GetCustomerAddresses(Resource):
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(200, description='Successfully get Customer addresses', model=customer_addresses_model)
     @ns.response(404, description='Customer addresses not found!')
+    @ns.response(401, description='Customer is not authenticated!', model=customer_addresses_model)
+    @ns.response(403, description='Customer is not authorized!', model=customer_addresses_model)
+    @auth("GET_CUSTOMER_ADDRESSE_BY_ID")
     def get(self, id):
         try:
             customer_addresses = CustomerAddresses.query.get_or_404(id)
@@ -68,8 +75,11 @@ class GetCustomerAddresses(Resource):
 
 @ns.route('/get')
 class GetCustomerAddressess(Resource):
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(200, description='Successfully get list of Customer addressess', model=customer_addresses_model)
+    @ns.response(401, description='Customer is not authenticated!', model=customer_addresses_model)
+    @ns.response(403, description='Customer is not authorized!', model=customer_addresses_model)
+    @auth("GET_CUSTOMER_ADDRESSES_LIST")
     def get(self):
         return jsonify(customer_addressess_schema.dump(CustomerAddresses.query.all()))
 
@@ -77,9 +87,12 @@ class GetCustomerAddressess(Resource):
 @ns.route('/<int:id>/update')
 class UpdateCustomerAddresses(Resource):
     @ns.expect(customer_addresses_model)
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(200, description='Successfully updated Customer addresses', model=customer_addresses_model)
     @ns.response(404, description='Customer addresses not found!')
+    @ns.response(401, description='Customer is not authenticated!', model=customer_addresses_model)
+    @ns.response(403, description='Customer is not authorized!', model=customer_addresses_model)
+    @auth("UPDATE_CUSTOMER_ADDRESSE")
     def put(self, id):
         json = request.json
 
@@ -118,9 +131,12 @@ class UpdateCustomerAddresses(Resource):
 
 @ns.route('/<int:id>/delete')
 class DeleteCustomerAddresses(Resource):
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(204, description='Successfully removed Customer addresses')
     @ns.response(404, description='Customer addresses not found!')
+    @ns.response(401, description='Customer is not authenticated!', model=customer_addresses_model)
+    @ns.response(403, description='Customer is not authorized!', model=customer_addresses_model)
+    @auth("DELETE_CUSTOMER_ADDRESSE")
     def delete(self, id):
         try:
             customer_addresses = CustomerAddresses.query.get_or_404(id)

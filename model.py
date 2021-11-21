@@ -22,10 +22,16 @@ from config import db
 #                        db.Column('hotel_id', db.Integer, db.ForeignKey('hotels.id'))
 #                        )
 
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(64), nullable=False)
+
 
 class Customer(db.Model):
     __tablename__ = 'customers'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    username = db.Column(db.String(64), nullable=False)
     first_name = db.Column(db.String(64), nullable=False)
     middle_name = db.Column(db.String(64), nullable=False)
     last_name = db.Column(db.String(124), nullable=False)
@@ -35,7 +41,24 @@ class Customer(db.Model):
     is_covid_vaccinated = db.Column(db.Boolean, nullable=False, default=False)
     is_blocked = db.Column(db.Boolean, default=False)
     password_hash = db.Column(db.String(64), nullable=False)
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False)
     # v_customers = db.relationship('v_customers', secondary=voucher_customers)
+
+
+class Permission(db.Model):
+    __tablename__ = 'permissions'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    method = db.Column(db.String(64), nullable=False)
+
+
+class PermissionRoles(db.Model):
+    __tablename__ = 'permission_roles'
+    # column_not_exist_in_db = db.Column(db.Integer, primary_key=True)
+    role_id = db.Column(db.Integer, db.ForeignKey("roles.id"), primary_key=True, nullable=False)
+    permission_id = db.Column(db.Integer, db.ForeignKey("permissions.id"), primary_key=True, nullable=False)
+
+    roles = db.relationship("Role")
+    permissions = db.relationship("Permission")
 
 
 class Country(db.Model):
@@ -140,7 +163,7 @@ class VoucherCustomers(db.Model):
     __tablename__ = 'voucher_customers'
     # column_not_exist_in_db = db.Column(db.Integer, primary_key=True)
     voucher_id = db.Column(db.Integer, db.ForeignKey("vouchers.id"), primary_key=True, nullable=False)
-    customer_id = db.Column(db.Integer, db.ForeignKey("customers.id"),  primary_key=True, nullable=False)
+    customer_id = db.Column(db.Integer, db.ForeignKey("customers.id"), primary_key=True, nullable=False)
 
     vouchers = db.relationship("Vouchers")
     customers = db.relationship("Customer")

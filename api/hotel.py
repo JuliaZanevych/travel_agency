@@ -2,6 +2,7 @@ from flask import Response, request, jsonify
 from flask_restx import Namespace, Resource
 from werkzeug.exceptions import NotFound
 
+from api.auth import auth
 from config import api, db
 from model import Hotel
 from schema import hotel_model, hotel_schema, hotels_schema
@@ -13,8 +14,11 @@ api.add_namespace(ns)
 @ns.route('/post')
 class CreateHotel(Resource):
     @ns.expect(hotel_model)
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(201, description='Successfully created new Hotel', model=hotel_model)
+    @ns.response(401, description='Customer is not authenticated!', model=hotel_model)
+    @ns.response(403, description='Customer is not authorized!', model=hotel_model)
+    @auth("CREATE_HOTEL")
     def post(self):
         json = request.json
 
@@ -52,9 +56,12 @@ class CreateHotel(Resource):
 
 @ns.route('/<int:id>/get')
 class GetHotel(Resource):
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(200, description='Successfully get Hotel', model=hotel_model)
     @ns.response(404, description='Hotel not found!')
+    @ns.response(401, description='Customer is not authenticated!', model=hotel_model)
+    @ns.response(403, description='Customer is not authorized!', model=hotel_model)
+    @auth("GET_HOTEL_BY_ID")
     def get(self, id):
         try:
             hotel = Hotel.query.get_or_404(id)
@@ -68,8 +75,11 @@ class GetHotel(Resource):
 
 @ns.route('/get')
 class GetHotels(Resource):
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(200, description='Successfully get list of Hotels', model=hotel_model)
+    @ns.response(401, description='Customer is not authenticated!', model=hotel_model)
+    @ns.response(403, description='Customer is not authorized!', model=hotel_model)
+    @auth("GET_HOTELS_LIST")
     def get(self):
         return jsonify(hotels_schema.dump(Hotel.query.all()))
 
@@ -77,9 +87,12 @@ class GetHotels(Resource):
 @ns.route('/<int:id>/update')
 class UpdateHotel(Resource):
     @ns.expect(hotel_model)
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(200, description='Successfully updated Hotel', model=hotel_model)
     @ns.response(404, description='Hotel  not found!')
+    @ns.response(401, description='Customer is not authenticated!', model=hotel_model)
+    @ns.response(403, description='Customer is not authorized!', model=hotel_model)
+    @auth("UPDATE_HOTEL")
     def put(self, id):
         json = request.json
 
@@ -118,9 +131,12 @@ class UpdateHotel(Resource):
 
 @ns.route('/<int:id>/delete')
 class DeleteHotel(Resource):
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(204, description='Successfully removed Hotel')
     @ns.response(404, description='Hotel not found!')
+    @ns.response(401, description='Customer is not authenticated!', model=hotel_model)
+    @ns.response(403, description='Customer is not authorized!', model=hotel_model)
+    @auth("DELETE_HOTEL")
     def delete(self, id):
         try:
             hotel = Hotel.query.get_or_404(id)

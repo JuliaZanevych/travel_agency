@@ -2,6 +2,7 @@ from flask import Response, request, jsonify
 from flask_restx import Namespace, Resource
 from werkzeug.exceptions import NotFound
 
+from api.auth import auth
 from config import api, db
 from model import TouristAttraction
 from schema import tourist_attraction_model, tourist_attraction_schema, tourist_attractions_schema
@@ -13,8 +14,11 @@ api.add_namespace(ns)
 @ns.route('/post')
 class CreateTouristAttraction(Resource):
     @ns.expect(tourist_attraction_model)
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(201, description='Successfully created new Tourist Attraction', model=tourist_attraction_model)
+    @ns.response(401, description='Customer is not authenticated!', model=tourist_attraction_model)
+    @ns.response(403, description='Customer is not authorized!', model=tourist_attraction_model)
+    @auth("CREATE_TOURIST_ATTRACTION")
     def post(self):
         json = request.json
 
@@ -50,9 +54,12 @@ class CreateTouristAttraction(Resource):
 
 @ns.route('/<int:id>/get')
 class GetTouristAttraction(Resource):
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(200, description='Successfully get Tourist Attraction', model=tourist_attraction_model)
     @ns.response(404, description='Tourist Attraction not found!')
+    @ns.response(401, description='Customer is not authenticated!', model=tourist_attraction_model)
+    @ns.response(403, description='Customer is not authorized!', model=tourist_attraction_model)
+    @auth("GET_TOURIST_ATTRACTION_BY_ID")
     def get(self, id):
         try:
             tourist_attraction = TouristAttraction.query.get_or_404(id)
@@ -65,8 +72,11 @@ class GetTouristAttraction(Resource):
 
 @ns.route('/get')
 class GetTouristAttractions(Resource):
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(200, description='Successfully get list of Tourist Attractions', model=tourist_attraction_model)
+    @ns.response(401, description='Customer is not authenticated!', model=tourist_attraction_model)
+    @ns.response(403, description='Customer is not authorized!', model=tourist_attraction_model)
+    @auth("GET_TOURIST_ATTRACTIONS_LIST")
     def get(self):
         return jsonify(tourist_attractions_schema.dump(TouristAttraction.query.all()))
 
@@ -74,9 +84,12 @@ class GetTouristAttractions(Resource):
 @ns.route('/<int:id>/update')
 class UpdateTouristAttraction(Resource):
     @ns.expect(tourist_attraction_model)
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(200, description='Successfully updated Tourist Attraction', model=tourist_attraction_model)
     @ns.response(404, description='Tourist Attraction not found!')
+    @ns.response(401, description='Customer is not authenticated!', model=tourist_attraction_model)
+    @ns.response(403, description='Customer is not authorized!', model=tourist_attraction_model)
+    @auth("UPDATE_TOURIST_ATTRACTION")
     def put(self, id):
         json = request.json
 
@@ -113,9 +126,12 @@ class UpdateTouristAttraction(Resource):
 
 @ns.route('/<int:id>/delete')
 class DeleteTouristAttraction(Resource):
-    @ns.param(name='Auth', description='Auth JWT token', _in='header', required=True)
+    @ns.param(name='Authorization', description='Basic access authentication token', _in='header', required=True)
     @ns.response(204, description='Successfully removed Tourist Attraction')
     @ns.response(404, description='Tourist Attraction not found!')
+    @ns.response(401, description='Customer is not authenticated!', model=tourist_attraction_model)
+    @ns.response(403, description='Customer is not authorized!', model=tourist_attraction_model)
+    @auth("DELETE_TOURIST_ATTRACTION")
     def delete(self, id):
         try:
             tourist_attraction = TouristAttraction.query.get_or_404(id)
