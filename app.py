@@ -10,7 +10,6 @@ from api import \
     transportation, \
     customer_addresses, \
     hotel, \
-    user, \
     voucher, \
     role, \
     permission

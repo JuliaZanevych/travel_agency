@@ -4,18 +4,20 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "*"
-flask-restful = "*"
-flask-sqlalchemy = "*"
 flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
 flask-restx = "*"
-pymysql = "*"
 cryptography = "*"
 alembic = "*"
 bcrypt = "*"
-flask-bcrypt = "*"
-flask-httpauth = "*"
+Flask = "*"
+Flask-RESTful = "*"
+Flask-SQLAlchemy = "*"
+PyMySQL = "*"
+Flask-Bcrypt = "*"
+Flask-HTTPAuth = "*"
+coverage = "*"
+flask-testing = "*"
 
 [dev-packages]
 

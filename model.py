@@ -138,19 +138,6 @@ class Hotel(db.Model):
     details = db.Column(db.String(64))
 
 
-class User(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    first_name = db.Column(db.String(64), nullable=False)
-    middle_name = db.Column(db.String(64), nullable=False)
-    last_name = db.Column(db.String(124), nullable=False)
-    phone = db.Column(db.String(16), nullable=False)
-    date_of_birthday = db.Column(db.Date, nullable=False)
-    gender = db.Column(db.String(64), nullable=False)
-    is_baned = db.Column(db.Boolean, default=False, nullable=False)
-    password_hash = db.Column(db.String(64), nullable=False)
-
-
 class Vouchers(db.Model):
     __tablename__ = 'vouchers'
     id = db.Column(db.Integer, primary_key=True)
