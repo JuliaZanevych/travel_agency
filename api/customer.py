@@ -22,7 +22,7 @@ class CreateCustomer(Resource):
     @ns.response(201, description='Successfully created new Customer', model=customer_model)
     @ns.response(401, description='Customer is not authenticated!', model=customer_model)
     @ns.response(403, description='Customer is not authorized!', model=customer_model)
-    # @auth("CREATE_CUSTOMER")
+    @auth("CREATE_CUSTOMER")
     def post(self):
         json = request.json
 

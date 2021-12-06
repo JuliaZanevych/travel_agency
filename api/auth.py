@@ -41,12 +41,6 @@ def auth(api_permission):
             username = decoded_token_parts[0]
             password = decoded_token_parts[1]
             Permission.method = api_permission
-            
-            print(api_permission)
-            print(str(auth_header))
-            print(str(decoded))
-            print(username)
-            print(password)
 
             customer = db.session.query(Customer.password_hash, Customer.role_id).filter_by(username=username).first()
             if customer is None:
@@ -67,10 +61,6 @@ def auth(api_permission):
                     'role_id': customer.role_id,
                     'method': api_permission
                 }).fetchall()[0][0]
-
-            print(customer.password_hash)
-            print(is_valid_password)
-            print(have_permission)
 
             if not have_permission:
                 res = jsonify({'message': 'Customer is not authorized to call this API!'})

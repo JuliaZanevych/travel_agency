@@ -157,7 +157,7 @@ class CitySchema(ma.Schema):
             'city_name',
             'country_id',
             'city_latitude',
-            'city_latitude',
+            'city_longitude',
             'details'
         )
 
@@ -165,7 +165,7 @@ class CitySchema(ma.Schema):
 city_model = api.model('city', {
     'city_name': fields.String('Lviv'),
     'country_id': fields.Integer(1),
-    'city_latitude': fields.String(18.000),
+    'city_latitude': fields.Integer(18.000),
     'city_longitude': fields.Integer(23.00),
     'details': fields.String('One of the most beautiful cities of Ukraine')
 })
@@ -250,37 +250,6 @@ hotel_model = api.model('hotel', {
 
 hotel_schema = HotelSchema()
 hotels_schema = HotelSchema(many=True)
-
-
-class UserSchema(ma.Schema):
-    class Meta:
-        fields = (
-            'id',
-            'first_name',
-            'middle_name',
-            'last_name',
-            'phone',
-            'date_of_birthday',
-            'gender',
-            'is_baned',
-            'password_hash'
-        )
-
-
-user_model = api.model('User_Demo', {
-    'first_name': fields.String('Julia'),
-    'middle_name': fields.String('Bogdanivna'),
-    'last_name': fields.String('Zanevych'),
-    'phone': fields.String('0731213007'),
-    'date_of_birthday': fields.String('2002-07-14'),
-    'gender': fields.String('FEMALE'),
-    'is_baned': fields.Boolean(),
-    'password_hash': fields.String('Ju234lia')
-
-})
-
-user_schema = UserSchema()
-users_schema = UserSchema(many=True)
 
 
 class VoucherSchema(ma.Schema):

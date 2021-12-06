@@ -108,7 +108,7 @@ class GetTour(Resource):
         tourist_attractions_ids = [tour_attraction.tourist_attractions_id for tour_attraction in tour_attractions]
 
         tour_dto = tour_schema.dump(tour)
-        tour_dto['tourist_attractions_ids'] = tourist_attractions_ids
+        tour_dto['tourist_attraction_ids'] = tourist_attractions_ids
 
         return jsonify(tour_dto)
 
